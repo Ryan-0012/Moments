@@ -18,10 +18,11 @@ export class CommentService {
   constructor(private http: HttpClient) { }
 
   createComment(data: Comment): Observable<Response<Comment>> {
- 
-    const url = `${this.apiurl}/${data.moment_id}/comments`
+
     
-    return this.http.post<Response<Comment>>(this.apiurl, data);
+    const url = `${this.apiurl}/${data.momentId}/comments`
+    
+    return this.http.post<Response<Comment>>(url, data);
   }
   
   

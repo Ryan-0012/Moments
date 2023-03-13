@@ -19,12 +19,12 @@
 
     <div class="comments">
 
-       <h3>Comentários ({{moment.comments!.length > 0 ? moment.comments!.length : 0 }})</h3>
-       <div *ngIf="moment.comments!.length > 0; else noComments">
+        <h3>Comentários ({{moment.comments?.length || 0}})</h3>
+       <div *ngIf="moment?.comments?.length; else noComments">
         
         <div class="comment-container" *ngFor="let comment of moment.comments">
             <p class="comment">{{comment.text}}</p>
-            <p class="autor"><span>Por:</span> {{comment.name}}</p>
+            <p class="autor"><span>Por:</span> {{comment.username}}</p>
         </div>
        </div>
         <ng-template #noComments>
@@ -44,9 +44,9 @@
             </div>
             <div class="form-group">
                 <label for="text">Nome:</label>
-                <input type="text" formControlName="name" placeholder="Digite seu nome" required/>
-                <div *ngIf="name.invalid && formDir.submitted" class="validation-error"> 
-                    <p *ngIf="name.errors?.['required']">O Nome é obrigatório.</p>
+                <input type="text" formControlName="username" placeholder="Digite seu nome" required/>
+                <div *ngIf="username.invalid && formDir.submitted" class="validation-error"> 
+                    <p *ngIf="username.errors?.['required']">O Nome é obrigatório.</p>
                 </div> 
             </div>  
             <input type="submit" value="Comentar!" />

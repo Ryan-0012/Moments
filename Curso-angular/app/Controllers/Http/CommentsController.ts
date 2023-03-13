@@ -7,11 +7,11 @@ export default class CommentsController {
     public async store({request, params, response}: HttpContextContract){
         const body = request.body()
         const momentId = params.momentId
-
+        
         await Moment.findOrFail(momentId)
 
         body.momentId = momentId
-
+    
         const comment = await Comment.create(body)
 
         response.status(201)
@@ -21,4 +21,13 @@ export default class CommentsController {
             data: comment,
         }
     }
+
+    public async index({ params }: HttpContextContract) {
+        const momentId = params.momentId
+        const moment = await Moment.findOrFail(momentId)
+        const comments = await moment.related('comments').query()
+      
+        return comments
+      }
+
 }

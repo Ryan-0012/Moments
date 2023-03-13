@@ -47,7 +47,12 @@ export default class MomentsController {
 
     public async show({params}: HttpContextContract){
 
-        const moment = await Moment.findOrFail(params.id)
+        const moment = await Moment.query()
+        .where('id', params.id)
+        .preload('comments')
+        .firstOrFail()
+
+        
 
         return{
             data: moment,
@@ -55,8 +60,9 @@ export default class MomentsController {
     }
 
     public async destroy({params}: HttpContextContract){
+        
         const moment = await Moment.findOrFail(params.id)
-
+        
         await moment.delete()
 
         return{

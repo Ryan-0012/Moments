@@ -17,9 +17,8 @@ import { Comment } from 'src/app/Comment';
   styleUrls: ['./moment.component.css']
 })
 export class MomentComponent implements OnInit{
-  moment?: Moment ;
+  moment?: Moment;
   baseApiUrl = environment.baseApiurl; 
-
   faTimes = faTimes;
   faEdit = faEdit;
 
@@ -37,20 +36,28 @@ export class MomentComponent implements OnInit{
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.momentService.getMoment(id).subscribe((item) => (this.moment = item.data));
-
+    this.momentService.getMoment(id).subscribe((item) => {
+      if (item && item.data) {
+        this.moment = item.data;
+      } else {
+        console.log("Não foi possível recuperar o momento com o ID fornecido.");
+      }
+    });
+    
     this.commentForm = new FormGroup({
       text: new FormControl('', [Validators.required]),
-      name: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
     });
+
+    
   }
 
   get text(){
     return this.commentForm.get('text')!;
   }
 
-  get name(){
-    return this.commentForm.get('name')!;
+  get username(){
+    return this.commentForm.get('username')!;
   }
 
   async removeHandler(id: number){
@@ -61,13 +68,21 @@ export class MomentComponent implements OnInit{
   }
 
   async onSubmit(formDirective: FormGroupDirective){
+    
     if(this.commentForm.invalid){
       return 
     }
     const data: Comment = this.commentForm.value;
-    data.moment_id= Number(this.moment!.id)
+    
+    data.momentId= Number(this.moment!.id)
 
-    await this.commentService.createComment(data).subscribe((comment) => this.moment!.comments!.push(comment.data));
+    try {
+      await this.commentService.createComment(data).subscribe((comment) => this.moment?.comments?.push(comment.data));
+
+    } catch (error) {
+      console.error('Erro ao adicionar comentário:', error);
+    }
+    
 
     this.messagesService.add("Comentário adicionado!")
 
